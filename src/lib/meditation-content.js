@@ -79,18 +79,28 @@ class MeditationContent {
         },
         {
           type: 'instruction',
+          text: 'Take another deep breath in... and let it go.',
+          pauseAfter: 8000,
+        },
+        {
+          type: 'instruction',
           text: 'Now allow your breathing to return to its natural rhythm. Simply observe each breath as it flows in and out.',
           pauseAfter: 15000,
         },
         {
           type: 'guidance',
-          text: 'Notice the sensation of the breath entering your nostrils... the gentle rise and fall of your chest or belly.',
-          pauseAfter: 20000,
+          text: 'Notice the sensation of the breath entering your nostrils. Feel the cool air as you breathe in.',
+          pauseAfter: 10000,
+        },
+        {
+          type: 'guidance',
+          text: 'Notice the warm air as you breathe out. Feel the gentle rise and fall of your chest or belly.',
+          pauseAfter: 15000,
         },
         {
           type: 'reminder',
-          text: 'If your mind wanders, gently bring your attention back to your breath. This is normal and part of the practice.',
-          pauseAfter: 25000,
+          text: 'If your mind wanders, that's okay. Gently bring your attention back to your breath. This is normal and part of the practice.',
+          pauseAfter: 20000,
         },
         {
           type: 'silence',
@@ -99,12 +109,27 @@ class MeditationContent {
         },
         {
           type: 'guidance',
-          text: 'Continue breathing naturally, staying present with each breath.',
+          text: 'Continue breathing naturally. Stay present with each breath.',
           pauseAfter: 20000,
         },
         {
+          type: 'silence',
+          text: '',
+          pauseAfter: 20000,
+        },
+        {
+          type: 'guidance',
+          text: 'Notice how your body feels right now. Relaxed. Calm. At peace.',
+          pauseAfter: 15000,
+        },
+        {
           type: 'outro',
-          text: 'Begin to deepen your breath once again. When you feel ready, gently open your eyes. Thank you for practicing breath awareness meditation.',
+          text: 'Begin to deepen your breath once again. Take a deep breath in... and out.',
+          pauseAfter: 8000,
+        },
+        {
+          type: 'outro',
+          text: 'When you feel ready, gently open your eyes. Thank you for practicing breath awareness meditation.',
           pauseAfter: 5000,
         },
       ],
@@ -287,18 +312,28 @@ class MeditationContent {
         },
         {
           type: 'instruction',
+          text: 'もう一度、深く息を吸って... ゆっくりと吐き出します。',
+          pauseAfter: 8000,
+        },
+        {
+          type: 'instruction',
           text: '呼吸を自然なリズムに戻しましょう。息が入って、出ていくのをただ観察します。',
           pauseAfter: 15000,
         },
         {
           type: 'guidance',
-          text: '鼻孔を通る息の感覚に気づいてください... 胸やお腹の優しい上下の動きを感じます。',
-          pauseAfter: 20000,
+          text: '鼻孔を通る息の感覚に気づいてください。吸う息の涼しさを感じます。',
+          pauseAfter: 10000,
+        },
+        {
+          type: 'guidance',
+          text: '吐く息の温かさを感じます。胸やお腹の優しい上下の動きに気づいてください。',
+          pauseAfter: 15000,
         },
         {
           type: 'reminder',
-          text: '心がさまよったら、優しく呼吸に注意を戻してください。これは普通のことで、練習の一部です。',
-          pauseAfter: 25000,
+          text: '心がさまよったら、大丈夫です。優しく呼吸に注意を戻してください。これは普通のことで、練習の一部です。',
+          pauseAfter: 20000,
         },
         {
           type: 'silence',
@@ -307,12 +342,27 @@ class MeditationContent {
         },
         {
           type: 'guidance',
-          text: '自然に呼吸を続け、一呼吸一呼吸と共に今ここにいます。',
+          text: '自然に呼吸を続けます。一呼吸一呼吸と共に今ここにいます。',
           pauseAfter: 20000,
         },
         {
+          type: 'silence',
+          text: '',
+          pauseAfter: 20000,
+        },
+        {
+          type: 'guidance',
+          text: '今の体の感覚に気づいてください。リラックスしています。穏やかです。平和です。',
+          pauseAfter: 15000,
+        },
+        {
           type: 'outro',
-          text: 'もう一度深く呼吸をしてください。準備ができたら、ゆっくりと目を開けてください。呼吸瞑想の練習、ありがとうございました。',
+          text: 'もう一度深く呼吸をしてください。深く息を吸って... ゆっくりと吐き出します。',
+          pauseAfter: 8000,
+        },
+        {
+          type: 'outro',
+          text: '準備ができたら、ゆっくりと目を開けてください。呼吸瞑想の練習、ありがとうございました。',
           pauseAfter: 5000,
         },
       ],

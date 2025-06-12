@@ -21,11 +21,13 @@
 - [ ] Configure Jest for testing
 
 #### Core Components
-- [ ] Implement service worker (background.js)
-- [ ] Create offscreen document for audio playback
+- [x] Implement service worker (background.js)
+- [x] Create offscreen document for audio playback
 - [ ] Build basic popup interface (HTML/CSS/JS)
-- [ ] Implement Chrome storage for settings
-- [ ] Create audio manager module
+- [x] Implement Chrome storage for settings
+- [x] Create audio manager module
+- [x] Create TTS script generator with SSML
+- [x] Implement meditation content with proper timing
 
 #### Basic Features
 - [ ] Play/pause functionality for local audio files

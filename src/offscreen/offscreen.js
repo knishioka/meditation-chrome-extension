@@ -1,4 +1,5 @@
 import { MESSAGE_TYPES, AUDIO_FORMATS, TTS_VOICES, API_ENDPOINTS } from '@config/constants';
+import ttsService from '@lib/tts-service';
 
 class OffscreenAudioPlayer {
   constructor() {
@@ -267,11 +268,15 @@ class OffscreenAudioPlayer {
       if (!this.isPlaying) return;
       
       try {
-        // Generate TTS audio
+        // Generate TTS audio with segment information
         const audioData = await this.generateTTS(
           voiceItem.text,
           this.currentSession.language,
-          { speed: 0.8 }
+          { 
+            segmentType: voiceItem.segment.type,
+            pauseAfter: voiceItem.segment.pauseAfter,
+            speakingRate: 0.85,
+          }
         );
         
         // Play the audio
@@ -339,20 +344,30 @@ class OffscreenAudioPlayer {
   }
 
   async generateTTS(text, language, options = {}) {
-    // In offline mode or for testing, return silence
-    if (process.env.OFFLINE_MODE === 'true' || !text) {
+    // If no text, return silence
+    if (!text) {
       return this.createSilentAudio(1000); // 1 second of silence
     }
     
     try {
-      // For now, return a placeholder - actual implementation would call Google TTS API
-      // This would be implemented when API keys are available
-      console.log('TTS generation requested:', { text, language, options });
+      // Create a segment object for the TTS service
+      const segment = {
+        type: options.segmentType || 'guidance',
+        text: text,
+        pauseAfter: options.pauseAfter || 2000,
+      };
       
-      // Create a simple tone for testing
-      return this.createTestTone(2000); // 2 seconds
+      // Generate audio using TTS service
+      const audioData = await ttsService.generateSpeech(segment, language, options);
+      return audioData;
     } catch (error) {
       console.error('Error generating TTS:', error);
+      
+      // Fallback to test tone in development
+      if (process.env.NODE_ENV === 'development') {
+        return this.createTestTone(2000);
+      }
+      
       throw error;
     }
   }
