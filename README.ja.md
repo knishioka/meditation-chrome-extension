@@ -2,7 +2,9 @@
 
 心地よいBGMと自然な音声ガイダンスで瞑想セッションを提供するChrome拡張機能です。英語と日本語に対応し、モダンなWeb技術で構築された、落ち着いたユーザー体験を重視したデザインです。
 
-![Chrome Web Store Version](https://img.shields.io/badge/manifest-v3-blue)
+> **プロジェクトステータス**: 開発中。コア機能は実装済み、UI開発を進めています。
+
+![Manifest Version](https://img.shields.io/badge/manifest-v3-blue)
 ![Languages](https://img.shields.io/badge/languages-EN%20%7C%20JA-green)
 ![License](https://img.shields.io/badge/license-MIT-purple)
 
@@ -25,10 +27,9 @@
 
 ## 📦 インストール方法
 
-### Chrome ウェブストアから（準備中）
-審査後、Chrome ウェブストアで公開予定です。
-
 ### 手動インストール（開発者モード）
+
+現在、拡張機能は開発者モードで手動インストールする必要があります。Chrome ウェブストアでの公開は将来予定しています。
 
 1. **拡張機能をダウンロード**
    ```bash

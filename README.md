@@ -2,7 +2,9 @@
 
 A Chrome extension that provides guided meditation sessions with soothing background music and natural voice guidance in English and Japanese. Built with modern web technologies and designed for a calming user experience.
 
-![Chrome Web Store Version](https://img.shields.io/badge/manifest-v3-blue)
+> **Project Status**: In active development. Core functionality is implemented, UI development is in progress.
+
+![Manifest Version](https://img.shields.io/badge/manifest-v3-blue)
 ![Languages](https://img.shields.io/badge/languages-EN%20%7C%20JA-green)
 ![License](https://img.shields.io/badge/license-MIT-purple)
 
@@ -25,10 +27,9 @@ A Chrome extension that provides guided meditation sessions with soothing backgr
 
 ## 📦 Installation
 
-### From Chrome Web Store (Coming Soon)
-The extension will be available on the Chrome Web Store after review.
-
 ### Manual Installation (Developer Mode)
+
+Currently, the extension needs to be installed manually in developer mode. Chrome Web Store publication is planned for the future.
 
 1. **Download the Extension**
    ```bash
@@ -226,7 +227,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: [GitHub Issues](https://github.com/knishioka/meditation-chrome-extension/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/knishioka/meditation-chrome-extension/discussions)
-- **Email**: support@example.com
 
 ---
 
