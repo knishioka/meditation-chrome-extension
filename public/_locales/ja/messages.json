@@ -1,0 +1,126 @@
+{
+  "extension_name": {
+    "message": "瞑想ガイド",
+    "description": "拡張機能の名前"
+  },
+  "extension_description": {
+    "message": "リラックスできる音楽と音声ガイド付きの瞑想セッション",
+    "description": "拡張機能の説明"
+  },
+  "start_meditation": {
+    "message": "瞑想を開始",
+    "description": "瞑想開始ボタン"
+  },
+  "stop_meditation": {
+    "message": "瞑想を停止",
+    "description": "瞑想停止ボタン"
+  },
+  "duration_label": {
+    "message": "時間",
+    "description": "時間選択のラベル"
+  },
+  "minutes": {
+    "message": "分",
+    "description": "時間の単位"
+  },
+  "meditation_type": {
+    "message": "瞑想の種類",
+    "description": "瞑想タイプ選択のラベル"
+  },
+  "breath_awareness": {
+    "message": "呼吸瞑想",
+    "description": "呼吸に集中する瞑想"
+  },
+  "body_scan": {
+    "message": "ボディスキャン",
+    "description": "段階的リラクゼーション瞑想"
+  },
+  "loving_kindness": {
+    "message": "慈悲の瞑想",
+    "description": "思いやりの瞑想"
+  },
+  "mindfulness": {
+    "message": "マインドフルネス",
+    "description": "今この瞬間への気づきの瞑想"
+  },
+  "background_sound": {
+    "message": "背景音",
+    "description": "背景音選択のラベル"
+  },
+  "nature_sounds": {
+    "message": "自然音",
+    "description": "自然の背景音オプション"
+  },
+  "ambient_music": {
+    "message": "アンビエント音楽",
+    "description": "アンビエント背景音楽オプション"
+  },
+  "silence": {
+    "message": "無音",
+    "description": "背景音なしのオプション"
+  },
+  "voice_guidance": {
+    "message": "音声ガイダンス",
+    "description": "音声ガイダンス切り替えラベル"
+  },
+  "settings": {
+    "message": "設定",
+    "description": "設定ボタンラベル"
+  },
+  "language": {
+    "message": "言語",
+    "description": "言語選択ラベル"
+  },
+  "volume": {
+    "message": "音量",
+    "description": "音量調整ラベル"
+  },
+  "voice_volume": {
+    "message": "音声の音量",
+    "description": "音声音量調整ラベル"
+  },
+  "music_volume": {
+    "message": "音楽の音量",
+    "description": "音楽音量調整ラベル"
+  },
+  "session_complete": {
+    "message": "セッション完了",
+    "description": "瞑想セッション終了時のメッセージ"
+  },
+  "loading": {
+    "message": "読み込み中...",
+    "description": "読み込みメッセージ"
+  },
+  "error_audio_playback": {
+    "message": "音声の再生エラーが発生しました。もう一度お試しください。",
+    "description": "音声再生失敗時のエラーメッセージ"
+  },
+  "error_network": {
+    "message": "ネットワークエラーです。接続を確認してください。",
+    "description": "ネットワーク問題のエラーメッセージ"
+  },
+  "session_complete_message": {
+    "message": "お疲れ様でした！瞑想セッションが完了しました。",
+    "description": "セッション完了時の通知メッセージ"
+  },
+  "reminder_title": {
+    "message": "瞑想の時間です",
+    "description": "瞑想リマインダーのタイトル"
+  },
+  "reminder_message": {
+    "message": "毎日の瞑想練習の時間になりました。",
+    "description": "瞑想リマインダーのメッセージ"
+  },
+  "start_now": {
+    "message": "今すぐ開始",
+    "description": "すぐに瞑想を始めるボタン"
+  },
+  "snooze": {
+    "message": "スヌーズ",
+    "description": "リマインダーを延期するボタン"
+  },
+  "quick_meditation": {
+    "message": "クイック瞑想",
+    "description": "クイック瞑想のコンテキストメニュー項目"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "name": "meditation-chrome-extension",
+  "version": "0.1.0",
+  "description": "A Chrome extension that provides guided meditation sessions with background music and voice guidance in English and Japanese.",
+  "private": true,
+  "author": "Ken Nishioka",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/knishioka/meditation-chrome-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/knishioka/meditation-chrome-extension/issues"
+  },
+  "homepage": "https://github.com/knishioka/meditation-chrome-extension#readme",
+  "scripts": {
+    "dev": "webpack --mode=development --watch",
+    "build": "webpack --mode=production",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix",
+    "format": "prettier --write \"src/**/*.{js,json,css,html}\"",
+    "format:check": "prettier --check \"src/**/*.{js,json,css,html}\""
+  },
+  "keywords": [
+    "chrome-extension",
+    "meditation",
+    "mindfulness",
+    "wellness",
+    "japanese",
+    "english"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@types/jest": "^29.5.14",
+    "babel-jest": "^30.0.0",
+    "babel-loader": "^10.0.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^13.0.0",
+    "css-loader": "^7.1.2",
+    "dotenv-webpack": "^8.1.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.4.1",
+    "html-webpack-plugin": "^5.6.3",
+    "jest": "^30.0.0",
+    "jest-environment-jsdom": "^30.0.0",
+    "prettier": "^3.5.3",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
+  }
+}

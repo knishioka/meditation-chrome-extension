@@ -1,0 +1,126 @@
+{
+  "extension_name": {
+    "message": "Meditation Guide",
+    "description": "Name of the extension"
+  },
+  "extension_description": {
+    "message": "Guided meditation sessions with relaxing music and voice guidance",
+    "description": "Description of the extension"
+  },
+  "start_meditation": {
+    "message": "Start Meditation",
+    "description": "Button to start meditation"
+  },
+  "stop_meditation": {
+    "message": "Stop Meditation",
+    "description": "Button to stop meditation"
+  },
+  "duration_label": {
+    "message": "Duration",
+    "description": "Label for duration selection"
+  },
+  "minutes": {
+    "message": "minutes",
+    "description": "Unit for time"
+  },
+  "meditation_type": {
+    "message": "Meditation Type",
+    "description": "Label for meditation type selection"
+  },
+  "breath_awareness": {
+    "message": "Breath Awareness",
+    "description": "Type of meditation focusing on breathing"
+  },
+  "body_scan": {
+    "message": "Body Scan",
+    "description": "Type of meditation for progressive relaxation"
+  },
+  "loving_kindness": {
+    "message": "Loving-Kindness",
+    "description": "Type of meditation for compassion"
+  },
+  "mindfulness": {
+    "message": "Mindfulness",
+    "description": "Type of meditation for present awareness"
+  },
+  "background_sound": {
+    "message": "Background Sound",
+    "description": "Label for background sound selection"
+  },
+  "nature_sounds": {
+    "message": "Nature Sounds",
+    "description": "Option for nature background sounds"
+  },
+  "ambient_music": {
+    "message": "Ambient Music",
+    "description": "Option for ambient background music"
+  },
+  "silence": {
+    "message": "Silence",
+    "description": "Option for no background sound"
+  },
+  "voice_guidance": {
+    "message": "Voice Guidance",
+    "description": "Label for voice guidance toggle"
+  },
+  "settings": {
+    "message": "Settings",
+    "description": "Settings button label"
+  },
+  "language": {
+    "message": "Language",
+    "description": "Language selection label"
+  },
+  "volume": {
+    "message": "Volume",
+    "description": "Volume control label"
+  },
+  "voice_volume": {
+    "message": "Voice Volume",
+    "description": "Voice volume control label"
+  },
+  "music_volume": {
+    "message": "Music Volume",
+    "description": "Music volume control label"
+  },
+  "session_complete": {
+    "message": "Session Complete",
+    "description": "Message when meditation session ends"
+  },
+  "loading": {
+    "message": "Loading...",
+    "description": "Loading message"
+  },
+  "error_audio_playback": {
+    "message": "Error playing audio. Please try again.",
+    "description": "Error message for audio playback failure"
+  },
+  "error_network": {
+    "message": "Network error. Please check your connection.",
+    "description": "Error message for network issues"
+  },
+  "session_complete_message": {
+    "message": "Great job! You've completed your meditation session.",
+    "description": "Notification message when session completes"
+  },
+  "reminder_title": {
+    "message": "Time to Meditate",
+    "description": "Title for meditation reminder"
+  },
+  "reminder_message": {
+    "message": "It's time for your daily meditation practice.",
+    "description": "Message for meditation reminder"
+  },
+  "start_now": {
+    "message": "Start Now",
+    "description": "Button to start meditation immediately"
+  },
+  "snooze": {
+    "message": "Snooze",
+    "description": "Button to delay reminder"
+  },
+  "quick_meditation": {
+    "message": "Quick Meditation",
+    "description": "Context menu item for quick meditation"
+  }
+}
