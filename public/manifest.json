@@ -32,10 +32,6 @@
     "notifications",
     "contextMenus"
   ],
-  "host_permissions": [
-    "https://www.freesound.org/*",
-    "https://texttospeech.googleapis.com/*"
-  ],
   "web_accessible_resources": [
     {
       "resources": [

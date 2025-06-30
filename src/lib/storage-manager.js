@@ -103,21 +103,6 @@ class StorageManager {
     return this.set(STORAGE_KEYS.CACHED_AUDIO, cache);
   }
 
-  async getApiKeys() {
-    return (await this.get(STORAGE_KEYS.API_KEYS)) || {};
-  }
-
-  async setApiKey(service, key) {
-    const apiKeys = await this.getApiKeys();
-    apiKeys[service] = key;
-    return this.set(STORAGE_KEYS.API_KEYS, apiKeys);
-  }
-
-  async removeApiKey(service) {
-    const apiKeys = await this.getApiKeys();
-    delete apiKeys[service];
-    return this.set(STORAGE_KEYS.API_KEYS, apiKeys);
-  }
 
   // Storage usage monitoring
   async getStorageUsage() {

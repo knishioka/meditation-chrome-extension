@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditation Audio Generator - Web Speech API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #phraseList {
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .phrase-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f9f9f9;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .phrase-item:hover {
+            background: #e9e9e9;
+        }
+        .phrase-text {
+            flex: 1;
+        }
+        .phrase-status {
+            margin-left: 10px;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .status-pending { background: #ffd700; }
+        .status-generating { background: #87ceeb; }
+        .status-completed { background: #90ee90; }
+        .status-error { background: #ffb6c1; }
+        #status {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e8f4f8;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .voice-test {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f0f8ff;
+            border-radius: 5px;
+        }
+        .download-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧘 Meditation Audio Generator</h1>
+        
+        <div class="voice-test">
+            <h2>Test Voice Settings</h2>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="testText">Test Text:</label>
+                    <input type="text" id="testText" value="Welcome to your meditation session" />
+                </div>
+                <div class="control-group">
+                    <label for="testLang">Language:</label>
+                    <select id="testLang">
+                        <option value="en-US">English (US)</option>
+                        <option value="ja-JP">Japanese</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <button onclick="testVoice()">Test Voice</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="language">Language:</label>
+                <select id="language" onchange="updatePhraseList()">
+                    <option value="en">English</option>
+                    <option value="ja">Japanese</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="voice">Voice:</label>
+                <select id="voice"></select>
+            </div>
+            <div class="control-group">
+                <label for="rate">Speed:</label>
+                <input type="range" id="rate" min="0.5" max="1.5" value="0.9" step="0.1" />
+                <span id="rateValue">0.9</span>
+            </div>
+            <div class="control-group">
+                <label for="pitch">Pitch:</label>
+                <input type="range" id="pitch" min="0.5" max="2" value="1" step="0.1" />
+                <span id="pitchValue">1</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="generateAll()" id="generateAllBtn">Generate All Phrases</button>
+            <button onclick="generateSelected()" id="generateSelectedBtn">Generate Selected</button>
+            <button onclick="downloadGenerated()" id="downloadBtn" disabled>Download Generated Audio</button>
+        </div>
+
+        <div id="status">Ready to generate audio files</div>
+
+        <h2>Phrases to Generate</h2>
+        <div id="phraseList"></div>
+
+        <div class="download-section" id="downloadSection" style="display: none;">
+            <h3>Generated Audio Files</h3>
+            <div id="downloadLinks"></div>
+        </div>
+    </div>
+
+    <script>
+        // Import phrase data
+        const PHRASES = {
+            en: {
+                'welcome': 'Welcome to your meditation session',
+                'session_complete': 'Your meditation session is complete',
+                'take_a_deep_breath': 'Take a deep breath',
+                'breathe_in': 'Breathe in',
+                'breathe_out': 'Breathe out',
+                'hold_your_breath': 'Hold your breath',
+                'relax': 'Relax',
+                'focus_on_your_breath': 'Focus on your breath',
+                'let_go': 'Let go',
+                'be_present': 'Be present',
+                'notice_your_feet': 'Notice your feet',
+                'notice_your_legs': 'Notice your legs',
+                'notice_your_stomach': 'Notice your stomach',
+                'notice_your_chest': 'Notice your chest',
+                'notice_your_shoulders': 'Notice your shoulders',
+                'notice_your_arms': 'Notice your arms',
+                'notice_your_hands': 'Notice your hands',
+                'notice_your_neck': 'Notice your neck',
+                'notice_your_face': 'Notice your face',
+                'notice_your_head': 'Notice your head',
+                'may_you_be_happy': 'May you be happy',
+                'may_you_be_peaceful': 'May you be peaceful',
+                'may_you_be_free': 'May you be free from suffering',
+                'send_love_to_yourself': 'Send love to yourself',
+                'send_love_to_others': 'Send love to others',
+                'lets_begin': "Let's begin",
+                'gently': 'Gently',
+                'slowly': 'Slowly',
+                'when_ready': 'When you are ready',
+                'open_your_eyes': 'Open your eyes'
+            },
+            ja: {
+                'welcome': 'ようこそ、瞑想セッションへ',
+                'session_complete': '瞑想セッションが完了しました',
+                'take_a_deep_breath': '深く息を吸ってください',
+                'breathe_in': '息を吸って',
+                'breathe_out': '息を吐いて',
+                'hold_your_breath': '息を止めて',
+                'relax': 'リラックスして',
+                'focus_on_your_breath': '呼吸に意識を向けて',
+                'let_go': '手放して',
+                'be_present': '今この瞬間に意識を向けて',
+                'notice_your_feet': '足に意識を向けて',
+                'notice_your_legs': '脚に意識を向けて',
+                'notice_your_stomach': 'お腹に意識を向けて',
+                'notice_your_chest': '胸に意識を向けて',
+                'notice_your_shoulders': '肩に意識を向けて',
+                'notice_your_arms': '腕に意識を向けて',
+                'notice_your_hands': '手に意識を向けて',
+                'notice_your_neck': '首に意識を向けて',
+                'notice_your_face': '顔に意識を向けて',
+                'notice_your_head': '頭に意識を向けて',
+                'may_you_be_happy': 'あなたが幸せでありますように',
+                'may_you_be_peaceful': 'あなたが平和でありますように',
+                'may_you_be_free': 'あなたが苦しみから解放されますように',
+                'send_love_to_yourself': '自分自身に愛を送って',
+                'send_love_to_others': '他の人に愛を送って',
+                'lets_begin': '始めましょう',
+                'gently': '優しく',
+                'slowly': 'ゆっくりと',
+                'when_ready': '準備ができたら',
+                'open_your_eyes': '目を開けて'
+            }
+        };
+
+        let generatedAudio = {};
+        let audioContext;
+
+        // Initialize
+        window.onload = function() {
+            updateVoiceList();
+            updatePhraseList();
+            
+            // Update range display values
+            document.getElementById('rate').oninput = function() {
+                document.getElementById('rateValue').textContent = this.value;
+            };
+            document.getElementById('pitch').oninput = function() {
+                document.getElementById('pitchValue').textContent = this.value;
+            };
+        };
+
+        function updateVoiceList() {
+            const voices = speechSynthesis.getVoices();
+            const voiceSelect = document.getElementById('voice');
+            const lang = document.getElementById('language').value;
+            const langCode = lang === 'en' ? 'en-US' : 'ja-JP';
+            
+            voiceSelect.innerHTML = '';
+            
+            // Filter voices by language
+            const filteredVoices = voices.filter(voice => voice.lang.startsWith(langCode.split('-')[0]));
+            
+            filteredVoices.forEach(voice => {
+                const option = document.createElement('option');
+                option.value = voice.name;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect.appendChild(option);
+            });
+            
+            // Select a default voice
+            if (filteredVoices.length > 0) {
+                voiceSelect.value = filteredVoices[0].name;
+            }
+        }
+
+        function updatePhraseList() {
+            const lang = document.getElementById('language').value;
+            const phraseList = document.getElementById('phraseList');
+            const phrases = PHRASES[lang];
+            
+            phraseList.innerHTML = '';
+            
+            Object.entries(phrases).forEach(([key, text]) => {
+                const item = document.createElement('div');
+                item.className = 'phrase-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="phrase_${key}" checked />
+                    <div class="phrase-text">
+                        <strong>${key}:</strong> ${text}
+                    </div>
+                    <span class="phrase-status status-pending" id="status_${key}">Pending</span>
+                `;
+                phraseList.appendChild(item);
+            });
+        }
+
+        function testVoice() {
+            const text = document.getElementById('testText').value;
+            const lang = document.getElementById('testLang').value;
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = parseFloat(document.getElementById('rate').value);
+            utterance.pitch = parseFloat(document.getElementById('pitch').value);
+            
+            const voices = speechSynthesis.getVoices();
+            const selectedVoice = voices.find(voice => voice.lang.startsWith(lang.split('-')[0]));
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+            
+            speechSynthesis.speak(utterance);
+        }
+
+        async function generateAudio(key, text, lang) {
+            return new Promise((resolve, reject) => {
+                const utterance = new SpeechSynthesisUtterance(text);
+                const langCode = lang === 'en' ? 'en-US' : 'ja-JP';
+                utterance.lang = langCode;
+                utterance.rate = parseFloat(document.getElementById('rate').value);
+                utterance.pitch = parseFloat(document.getElementById('pitch').value);
+                
+                const voices = speechSynthesis.getVoices();
+                const voiceName = document.getElementById('voice').value;
+                const selectedVoice = voices.find(voice => voice.name === voiceName);
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+                
+                // Note: Web Speech API doesn't provide direct audio data access
+                // This is a placeholder for demonstration
+                // In a real implementation, you would need to use MediaRecorder API
+                // or a server-side solution to capture the audio
+                
+                utterance.onend = () => {
+                    // Simulate audio generation
+                    const audioData = {
+                        key: key,
+                        text: text,
+                        lang: lang,
+                        filename: `${key}.mp3`,
+                        // In real implementation, this would be actual audio data
+                        placeholder: true
+                    };
+                    resolve(audioData);
+                };
+                
+                utterance.onerror = (error) => {
+                    reject(error);
+                };
+                
+                speechSynthesis.speak(utterance);
+            });
+        }
+
+        async function generateAll() {
+            const lang = document.getElementById('language').value;
+            const phrases = PHRASES[lang];
+            const status = document.getElementById('status');
+            
+            document.getElementById('generateAllBtn').disabled = true;
+            
+            for (const [key, text] of Object.entries(phrases)) {
+                const statusEl = document.getElementById(`status_${key}`);
+                statusEl.className = 'phrase-status status-generating';
+                statusEl.textContent = 'Generating...';
+                
+                status.textContent = `Generating: ${key}`;
+                
+                try {
+                    const audioData = await generateAudio(key, text, lang);
+                    generatedAudio[`${lang}_${key}`] = audioData;
+                    
+                    statusEl.className = 'phrase-status status-completed';
+                    statusEl.textContent = 'Completed';
+                } catch (error) {
+                    statusEl.className = 'phrase-status status-error';
+                    statusEl.textContent = 'Error';
+                    console.error(`Error generating ${key}:`, error);
+                }
+                
+                // Add delay between generations
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            status.textContent = 'Generation complete!';
+            document.getElementById('generateAllBtn').disabled = false;
+            document.getElementById('downloadBtn').disabled = false;
+            showDownloadLinks();
+        }
+
+        async function generateSelected() {
+            const lang = document.getElementById('language').value;
+            const phrases = PHRASES[lang];
+            const status = document.getElementById('status');
+            
+            document.getElementById('generateSelectedBtn').disabled = true;
+            
+            for (const [key, text] of Object.entries(phrases)) {
+                const checkbox = document.getElementById(`phrase_${key}`);
+                if (!checkbox.checked) continue;
+                
+                const statusEl = document.getElementById(`status_${key}`);
+                statusEl.className = 'phrase-status status-generating';
+                statusEl.textContent = 'Generating...';
+                
+                status.textContent = `Generating: ${key}`;
+                
+                try {
+                    const audioData = await generateAudio(key, text, lang);
+                    generatedAudio[`${lang}_${key}`] = audioData;
+                    
+                    statusEl.className = 'phrase-status status-completed';
+                    statusEl.textContent = 'Completed';
+                } catch (error) {
+                    statusEl.className = 'phrase-status status-error';
+                    statusEl.textContent = 'Error';
+                    console.error(`Error generating ${key}:`, error);
+                }
+                
+                // Add delay between generations
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            status.textContent = 'Generation complete!';
+            document.getElementById('generateSelectedBtn').disabled = false;
+            document.getElementById('downloadBtn').disabled = Object.keys(generatedAudio).length === 0;
+            showDownloadLinks();
+        }
+
+        function showDownloadLinks() {
+            const section = document.getElementById('downloadSection');
+            const links = document.getElementById('downloadLinks');
+            
+            if (Object.keys(generatedAudio).length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            links.innerHTML = '<p><strong>Note:</strong> Web Speech API demo - actual audio files would be generated here. Use external TTS services for production.</p>';
+            
+            // Show generated files list
+            const list = document.createElement('ul');
+            Object.entries(generatedAudio).forEach(([key, data]) => {
+                const li = document.createElement('li');
+                li.textContent = `${data.lang}/${data.filename} - "${data.text}"`;
+                list.appendChild(li);
+            });
+            links.appendChild(list);
+        }
+
+        function downloadGenerated() {
+            // Create a summary JSON file
+            const summary = {
+                generated: new Date().toISOString(),
+                settings: {
+                    rate: document.getElementById('rate').value,
+                    pitch: document.getElementById('pitch').value,
+                    voice: document.getElementById('voice').value
+                },
+                files: generatedAudio
+            };
+            
+            const blob = new Blob([JSON.stringify(summary, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'audio-generation-summary.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Summary downloaded! Use external TTS services (like TTSMaker.com) to generate actual audio files.');
+        }
+
+        // Update voice list when voices are loaded
+        speechSynthesis.onvoiceschanged = updateVoiceList;
+    </script>
+</body>
+</html>

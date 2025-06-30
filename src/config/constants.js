@@ -22,7 +22,6 @@ export const STORAGE_KEYS = {
   USER_PREFERENCES: 'userPreferences',
   SESSION_HISTORY: 'sessionHistory',
   CACHED_AUDIO: 'cachedAudio',
-  API_KEYS: 'apiKeys',
 };
 
 export const DEFAULT_PREFERENCES = {
@@ -61,27 +60,28 @@ export const AUDIO_FORMATS = {
   WEBM: 'audio/webm',
 };
 
-export const TTS_VOICES = {
-  en: {
-    standard: 'en-US-Standard-C',
-    wavenet: 'en-US-Wavenet-C',
-    neural: 'en-US-Neural2-C',
-  },
-  ja: {
-    standard: 'ja-JP-Standard-A',
-    wavenet: 'ja-JP-Wavenet-A',
-    neural: 'ja-JP-Neural2-A',
-  },
+// Local audio paths configuration
+export const LOCAL_AUDIO_PATHS = {
+  VOICE_BASE: 'audio/voice',
+  BACKGROUND_BASE: 'audio/background',
 };
 
-export const API_ENDPOINTS = {
-  GOOGLE_TTS: process.env.GOOGLE_TTS_ENDPOINT || 'https://texttospeech.googleapis.com/v1',
-  FREESOUND: process.env.FREESOUND_API_ENDPOINT || 'https://freesound.org/apiv2',
+// Available background music files
+export const BACKGROUND_MUSIC_FILES = {
+  NATURE: {
+    rain: 'nature/rain-30min.mp3',
+    ocean: 'nature/ocean-30min.mp3',
+    forest: 'nature/forest-30min.mp3',
+  },
+  AMBIENT: {
+    calm: 'ambient/calm-meditation-30min.mp3',
+    peaceful: 'ambient/peaceful-meditation-30min.mp3',
+  },
+  SILENCE: 'silence-30min.mp3',
 };
 
 export const ERROR_MESSAGES = {
   AUDIO_PLAYBACK_FAILED: 'error_audio_playback',
-  NETWORK_ERROR: 'error_network',
-  API_KEY_MISSING: 'API key is missing. Please configure in settings.',
-  OFFLINE_MODE: 'Running in offline mode. Some features may be limited.',
+  AUDIO_FILE_NOT_FOUND: 'Audio file not found. Please check your installation.',
+  OFFLINE_MODE: 'This extension works completely offline.',
 };

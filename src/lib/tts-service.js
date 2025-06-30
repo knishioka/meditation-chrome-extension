@@ -1,21 +1,21 @@
-import { TTS_VOICES, API_ENDPOINTS, LANGUAGES } from '@config/constants';
+import { LANGUAGES } from '@config/constants';
 import ttsScriptGenerator from '@lib/tts-script-generator';
 import storageManager from '@lib/storage-manager';
+import { getVoiceAudioPath, parseTextToAudioPaths } from '@lib/audio-mapping';
 
 /**
- * TTS Service
- * Handles Text-to-Speech generation using Google Cloud TTS API
- * with proper SSML formatting for meditation content
+ * TTS Service (Offline Version)
+ * Handles voice playback using pre-recorded local audio files
+ * No external API dependencies
  */
 class TTSService {
   constructor() {
-    this.apiEndpoint = API_ENDPOINTS.GOOGLE_TTS;
     this.audioCache = new Map();
-    this.offlineMode = process.env.OFFLINE_MODE === 'true';
   }
 
   /**
    * Generate speech audio from text segment
+   * This now returns a path to a local audio file instead of generating speech
    */
   async generateSpeech(segment, language, options = {}) {
     // Generate cache key
@@ -37,9 +37,9 @@ class TTSService {
       }
     }
     
-    // Generate new audio
+    // Get local audio file
     try {
-      const audioData = await this.callTTSAPI(segment, language, options);
+      const audioData = await this.getLocalAudio(segment, language);
       
       // Cache the result
       this.audioCache.set(cacheKey, audioData);
@@ -47,111 +47,74 @@ class TTSService {
       
       return audioData;
     } catch (error) {
-      console.error('TTS generation failed:', error);
+      console.error('Failed to load local audio:', error);
       
-      // Fall back to offline audio if available
-      return this.getOfflineAudio(segment, language);
+      // Return silence as fallback
+      return this.createSilentAudio(segment.pauseAfter || 2000);
     }
   }
 
   /**
-   * Call Google Cloud TTS API
+   * Get local audio file based on segment content
    */
-  async callTTSAPI(segment, language, options) {
-    // Check if we're in offline mode
-    if (this.offlineMode) {
-      return this.getOfflineAudio(segment, language);
+  async getLocalAudio(segment, language) {
+    let audioPath = null;
+    
+    // First, try to map the segment text to specific audio files
+    if (segment.text) {
+      // Parse the text to find matching audio files
+      const audioPaths = parseTextToAudioPaths(segment.text, language);
+      
+      if (audioPaths.length > 0) {
+        // For now, use the first matching audio
+        // In the future, could concatenate multiple audio files
+        audioPath = audioPaths[0];
+      }
     }
     
-    // Get API key
-    const apiKeys = await storageManager.getApiKeys();
-    const apiKey = apiKeys.google_tts || process.env.GOOGLE_TTS_API_KEY;
-    
-    if (!apiKey) {
-      throw new Error('Google TTS API key not configured');
+    // If no specific match, use generic audio based on segment type
+    if (!audioPath) {
+      audioPath = this.getGenericAudioPath(segment, language);
     }
     
-    // Generate SSML
-    const ssml = ttsScriptGenerator.generateSegmentSSML(segment, language);
-    
-    // Prepare request body
-    const requestBody = {
-      input: {
-        ssml: ssml,
-      },
-      voice: this.getVoiceConfig(language, options),
-      audioConfig: this.getAudioConfig(options),
-    };
-    
-    // Make API request
-    const response = await fetch(`${this.apiEndpoint}/text:synthesize?key=${apiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    });
-    
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`TTS API error: ${error.error?.message || response.statusText}`);
+    if (!audioPath) {
+      // No audio file found, return silence
+      return this.createSilentAudio(segment.pauseAfter || 2000);
     }
     
-    const data = await response.json();
-    
-    // Convert base64 audio to ArrayBuffer
-    const audioData = this.base64ToArrayBuffer(data.audioContent);
-    
-    return audioData;
+    try {
+      const response = await fetch(chrome.runtime.getURL(audioPath));
+      if (!response.ok) {
+        throw new Error(`Failed to load audio: ${audioPath}`);
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      return arrayBuffer;
+    } catch (error) {
+      console.error('Failed to load audio file:', audioPath, error);
+      return this.createSilentAudio(segment.pauseAfter || 2000);
+    }
   }
 
   /**
-   * Get voice configuration for language
+   * Get generic audio path based on segment type
    */
-  getVoiceConfig(language, options = {}) {
-    const voiceType = options.voiceType || 'wavenet';
-    const gender = options.gender || 'NEUTRAL';
+  getGenericAudioPath(segment, language) {
+    // Map segment types to generic audio files
+    const typeToPhrase = {
+      intro: 'welcome',
+      instruction: 'breathe_in',
+      guidance: 'focus_on_your_breath',
+      reminder: 'be_present',
+      transition: 'gently',
+      outro: 'session_complete'
+    };
     
-    // Use predefined voices or custom selection
-    let voiceName;
-    if (options.voiceName) {
-      voiceName = options.voiceName;
-    } else {
-      const voices = TTS_VOICES[language] || TTS_VOICES.en;
-      voiceName = voices[voiceType] || voices.wavenet;
+    const phraseKey = typeToPhrase[segment.type];
+    if (phraseKey) {
+      return getVoiceAudioPath(phraseKey, language);
     }
     
-    return {
-      languageCode: this.getLanguageCode(language),
-      name: voiceName,
-      ssmlGender: gender,
-    };
-  }
-
-  /**
-   * Get audio configuration
-   */
-  getAudioConfig(options = {}) {
-    return {
-      audioEncoding: options.encoding || 'MP3',
-      speakingRate: options.speakingRate || 0.85, // Slightly slower for meditation
-      pitch: options.pitch || -1.0, // Slightly lower for calming effect
-      volumeGainDb: options.volumeGain || 0.0,
-      sampleRateHertz: options.sampleRate || 24000,
-      effectsProfileId: ['headphone-class-device'], // Optimize for headphones
-    };
-  }
-
-  /**
-   * Get language code for API
-   */
-  getLanguageCode(language) {
-    const codes = {
-      en: 'en-US',
-      ja: 'ja-JP',
-    };
-    
-    return codes[language] || 'en-US';
+    return null;
   }
 
   /**
@@ -161,63 +124,10 @@ class TTSService {
     const key = {
       text: segment.text,
       type: segment.type,
-      language,
-      voiceType: options.voiceType || 'wavenet',
-      speakingRate: options.speakingRate || 0.85,
+      language
     };
     
     return `tts_${btoa(JSON.stringify(key))}`;
-  }
-
-  /**
-   * Convert base64 to ArrayBuffer
-   */
-  base64ToArrayBuffer(base64) {
-    const binaryString = atob(base64);
-    const bytes = new Uint8Array(binaryString.length);
-    
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    
-    return bytes.buffer;
-  }
-
-  /**
-   * Get offline audio fallback
-   */
-  async getOfflineAudio(segment, language) {
-    // Map segment types to offline audio files
-    const offlineMap = {
-      intro: {
-        en: 'audio/voice/en/welcome.mp3',
-        ja: 'audio/voice/ja/welcome.mp3',
-      },
-      instruction: {
-        en: 'audio/voice/en/breath-in.mp3',
-        ja: 'audio/voice/ja/breath-in.mp3',
-      },
-      outro: {
-        en: 'audio/voice/en/session-complete.mp3',
-        ja: 'audio/voice/ja/session-complete.mp3',
-      },
-    };
-    
-    const audioPath = offlineMap[segment.type]?.[language];
-    
-    if (!audioPath) {
-      // Return silence for unsupported segments in offline mode
-      return this.createSilentAudio(segment.pauseAfter || 2000);
-    }
-    
-    try {
-      const response = await fetch(chrome.runtime.getURL(audioPath));
-      const arrayBuffer = await response.arrayBuffer();
-      return arrayBuffer;
-    } catch (error) {
-      console.error('Failed to load offline audio:', error);
-      return this.createSilentAudio(segment.pauseAfter || 2000);
-    }
   }
 
   /**
@@ -227,6 +137,13 @@ class TTSService {
     const sampleRate = 24000;
     const numberOfSamples = Math.floor(sampleRate * (durationMs / 1000));
     const buffer = new ArrayBuffer(numberOfSamples * 2); // 16-bit PCM
+    
+    // Fill with silence (zeros)
+    const view = new Int16Array(buffer);
+    for (let i = 0; i < view.length; i++) {
+      view[i] = 0;
+    }
+    
     return buffer;
   }
 
@@ -244,7 +161,7 @@ class TTSService {
         audioSegments.push({
           segment,
           audioData,
-          duration: segment.pauseAfter,
+          duration: segment.pauseAfter
         });
       } catch (error) {
         console.error(`Failed to generate audio for segment:`, segment, error);
@@ -255,7 +172,7 @@ class TTSService {
           segment,
           audioData: this.createSilentAudio(segment.pauseAfter || 2000),
           duration: segment.pauseAfter,
-          isError: true,
+          isError: true
         });
       }
     }
@@ -263,36 +180,38 @@ class TTSService {
     return {
       audioSegments,
       errors,
-      totalDuration: audioSegments.reduce((sum, seg) => sum + (seg.duration || 0), 0),
+      totalDuration: audioSegments.reduce((sum, seg) => sum + (seg.duration || 0), 0)
     };
   }
 
   /**
-   * Pre-generate and cache common meditation phrases
+   * Pre-load common audio files for better performance
    */
   async preloadCommonPhrases(language) {
-    const commonPhrases = {
-      en: [
-        { type: 'instruction', text: 'Take a deep breath in... and slowly release.' },
-        { type: 'guidance', text: 'Notice your breath.' },
-        { type: 'reminder', text: 'Gently bring your attention back.' },
-      ],
-      ja: [
-        { type: 'instruction', text: '深く息を吸って... ゆっくりと吐き出します。' },
-        { type: 'guidance', text: '呼吸に気づいてください。' },
-        { type: 'reminder', text: '優しく注意を戻してください。' },
-      ],
-    };
+    const commonPhrases = [
+      'welcome',
+      'breathe_in',
+      'breathe_out',
+      'focus_on_your_breath',
+      'relax',
+      'session_complete'
+    ];
     
-    const phrases = commonPhrases[language] || commonPhrases.en;
     const results = [];
     
-    for (const phrase of phrases) {
+    for (const phraseKey of commonPhrases) {
       try {
-        await this.generateSpeech(phrase, language);
-        results.push({ phrase, success: true });
+        const audioPath = getVoiceAudioPath(phraseKey, language);
+        if (audioPath) {
+          const segment = { 
+            type: 'preload', 
+            text: phraseKey 
+          };
+          await this.generateSpeech(segment, language);
+          results.push({ phrase: phraseKey, success: true });
+        }
       } catch (error) {
-        results.push({ phrase, success: false, error: error.message });
+        results.push({ phrase: phraseKey, success: false, error: error.message });
       }
     }
     
@@ -312,7 +231,40 @@ class TTSService {
   getCacheStats() {
     return {
       memoryCacheSize: this.audioCache.size,
-      memoryCacheKeys: Array.from(this.audioCache.keys()),
+      memoryCacheKeys: Array.from(this.audioCache.keys())
+    };
+  }
+
+  /**
+   * Check if all required audio files exist
+   */
+  async validateAudioFiles(language) {
+    const requiredPhrases = [
+      'welcome',
+      'breathe_in',
+      'breathe_out',
+      'session_complete'
+    ];
+    
+    const missingFiles = [];
+    
+    for (const phrase of requiredPhrases) {
+      const audioPath = getVoiceAudioPath(phrase, language);
+      if (audioPath) {
+        try {
+          const response = await fetch(chrome.runtime.getURL(audioPath));
+          if (!response.ok) {
+            missingFiles.push(audioPath);
+          }
+        } catch {
+          missingFiles.push(audioPath);
+        }
+      }
+    }
+    
+    return {
+      isValid: missingFiles.length === 0,
+      missingFiles
     };
   }
 }

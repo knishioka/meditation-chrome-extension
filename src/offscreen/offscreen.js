@@ -1,4 +1,4 @@
-import { MESSAGE_TYPES, AUDIO_FORMATS, TTS_VOICES, API_ENDPOINTS } from '@config/constants';
+import { MESSAGE_TYPES, AUDIO_FORMATS, BACKGROUND_MUSIC_FILES } from '@config/constants';
 import ttsService from '@lib/tts-service';
 
 class OffscreenAudioPlayer {
@@ -395,16 +395,25 @@ class OffscreenAudioPlayer {
   }
 
   getBackgroundMusicUrl() {
-    // Placeholder - in production, this would return actual URLs
-    const baseUrl = chrome.runtime.getURL('audio/');
+    // Get the appropriate background music file
+    const baseUrl = chrome.runtime.getURL('audio/background/');
     
     switch (this.currentSession.backgroundSound) {
-      case 'nature_sounds':
-        return `${baseUrl}nature-rain.mp3`;
-      case 'ambient_music':
-        return `${baseUrl}ambient-1.mp3`;
+      case 'nature_sounds': {
+        // Pick a random nature sound
+        const natureSounds = Object.values(BACKGROUND_MUSIC_FILES.NATURE);
+        const randomIndex = Math.floor(Math.random() * natureSounds.length);
+        return `${baseUrl}${natureSounds[randomIndex]}`;
+      }
+      case 'ambient_music': {
+        // Pick a random ambient music
+        const ambientMusic = Object.values(BACKGROUND_MUSIC_FILES.AMBIENT);
+        const randomIndex = Math.floor(Math.random() * ambientMusic.length);
+        return `${baseUrl}${ambientMusic[randomIndex]}`;
+      }
+      case 'silence':
       default:
-        return `${baseUrl}silence.mp3`;
+        return `${baseUrl}${BACKGROUND_MUSIC_FILES.SILENCE}`;
     }
   }
 

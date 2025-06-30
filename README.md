@@ -1,217 +1,279 @@
-# Meditation Chrome Extension 🧘
+# 🧘 Meditation Chrome Extension
 
-A Chrome extension that provides guided meditation sessions with soothing background music and natural voice guidance in English and Japanese. Built with modern web technologies and designed for a calming user experience.
+A privacy-focused Chrome extension that provides guided meditation sessions with soothing background music and voice guidance in English and Japanese. Works completely offline with no external dependencies.
 
-> **Project Status**: In active development. Core functionality is implemented, UI development is in progress.
-
-![Manifest Version](https://img.shields.io/badge/manifest-v3-blue)
-![Languages](https://img.shields.io/badge/languages-EN%20%7C%20JA-green)
-![License](https://img.shields.io/badge/license-MIT-purple)
+![Chrome Web Store](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=google-chrome&logoColor=white)
+![Manifest](https://img.shields.io/badge/Manifest-V3-green)
+![Offline](https://img.shields.io/badge/Works-Offline-orange)
+![Languages](https://img.shields.io/badge/Languages-EN%20%7C%20JA-blue)
 
 ## ✨ Features
 
-### Core Features
-- **🧘 Guided Meditation Sessions** - Choose from 5, 10, 15, 20, or 30-minute sessions
-- **🎵 Background Ambience** - Relaxing music, nature sounds, or silence
-- **🗣️ Natural Voice Guidance** - AI-powered voice synthesis in English and Japanese
-- **🎯 Meditation Styles** - Breath awareness, body scan, loving-kindness, and mindfulness
-- **📱 Clean Interface** - Minimalist design focused on calm and clarity
-- **💾 Offline Support** - Works without internet after initial setup
+- **🌐 Bilingual Support**: Full support for English and Japanese meditation guidance
+- **🎵 Multiple Meditation Types**:
+  - Breath Awareness
+  - Body Scan
+  - Loving Kindness
+  - Mindfulness
+- **⏱️ Flexible Duration**: 5, 10, 15, 20, or 30-minute sessions
+- **🎶 Background Options**: Nature sounds, ambient music, or silence
+- **🔒 Complete Privacy**: Works 100% offline, no data collection
+- **🎨 Clean Interface**: Simple, distraction-free design
+- **📱 Responsive**: Works on all screen sizes
 
-### Advanced Features
-- **⏰ Meditation Reminders** - Daily notification reminders
-- **📊 Progress Tracking** - Track your meditation history
-- **🎚️ Customizable Audio** - Separate volume controls for voice and music
-- **🌙 Context Menu** - Quick access to meditation from any webpage
-- **🔔 Session Notifications** - Gentle notifications when sessions complete
+## 🚀 Quick Start
 
-## 📦 Installation
+### Installation
 
-### Manual Installation (Developer Mode)
-
-Currently, the extension needs to be installed manually in developer mode. Chrome Web Store publication is planned for the future.
-
-1. **Download the Extension**
+1. **Clone the repository**:
    ```bash
-   git clone https://github.com/knishioka/meditation-chrome-extension.git
+   git clone https://github.com/yourusername/meditation-chrome-extension.git
    cd meditation-chrome-extension
    ```
 
-2. **Install Dependencies**
+2. **Install dependencies**:
    ```bash
    npm install
    ```
 
-3. **Set Up API Keys (Optional)**
-   
-   For full functionality, you'll need:
-   - Google Cloud Text-to-Speech API key
-   - Freesound API key
-   
+3. **Generate audio resources** (see [Audio Setup](#-audio-setup)):
    ```bash
-   cp .env.example .env
-   # Edit .env and add your API keys
+   npm run generate:audio-list
    ```
-   
-   > **Note**: The extension works in offline mode without API keys, using pre-recorded audio files.
 
-4. **Build the Extension**
+4. **Build the extension**:
    ```bash
    npm run build
    ```
 
-5. **Load into Chrome**
+5. **Load in Chrome**:
    - Open Chrome and navigate to `chrome://extensions/`
-   - Enable **"Developer mode"** (toggle in top right)
-   - Click **"Load unpacked"**
-   - Select the `dist` folder from the project directory
-   - The extension icon should appear in your toolbar!
+   - Enable "Developer mode"
+   - Click "Load unpacked"
+   - Select the `dist` folder
 
-## 🚀 Usage
+## 🎵 Audio Setup
 
-### Getting Started
+This extension requires audio files for voice guidance and background music. Due to the offline-first design, these need to be generated before use.
 
-1. **Click the Extension Icon** - Opens the meditation interface
-2. **Choose Your Settings**:
-   - Duration (5-30 minutes)
-   - Meditation type
-   - Background sound preference
-   - Language (English/Japanese)
-3. **Start Meditation** - Click "Start Meditation" to begin
-4. **During Session**:
-   - Pause/resume anytime
-   - Adjust volume on the fly
-   - Stop session if needed
+### Option 1: Quick Setup (Recommended)
+Use the provided audio generation tools:
 
-### Meditation Types
+```bash
+# Generate list of required audio files
+npm run generate:audio-list
 
-#### 🌬️ Breath Awareness
-Focus on your natural breathing rhythm. Perfect for beginners and stress relief.
+# View the generation report
+open scripts/audio-generation/audio-generation-report.md
+```
 
-#### 🏃 Body Scan
-Progressive relaxation through body awareness. Great for physical tension release.
+Then use [TTSMaker.com](https://ttsmaker.com) (free, no registration) to generate voices:
+- Language: English or Japanese
+- Voice: Choose calm, meditation-appropriate voices
+- Speed: 0.9x
+- Download as MP3
 
-#### 💝 Loving-Kindness
-Cultivate compassion for yourself and others. Enhances emotional well-being.
+### Option 2: Automated Generation
+If you have TTS API keys:
 
-#### 🎯 Mindfulness
-Present moment awareness practice. Improves focus and mental clarity.
+```bash
+# Create .env.local with your API keys
+cp .env.example .env.local
 
-### Keyboard Shortcuts
+# Run automated generation
+npm run generate:audio
+```
 
-- `Space` - Play/Pause
-- `Esc` - Stop session
-- `↑/↓` - Adjust voice volume
-- `←/→` - Adjust music volume
+Supported APIs:
+- Google Cloud Text-to-Speech
+- Microsoft Azure Speech Services
+- Amazon Polly
+
+### Audio File Structure
+```
+public/audio/
+├── voice/
+│   ├── en/          # English voice files
+│   └── ja/          # Japanese voice files
+└── background/
+    ├── nature/      # Nature sounds (rain, ocean, forest)
+    └── ambient/     # Ambient meditation music
+```
 
 ## 🛠️ Development
 
 ### Prerequisites
-
-- Node.js 18+ and npm 9+
-- Chrome browser (version 110+)
-- Git
+- Node.js 16+
+- npm or yarn
+- Chrome browser
 
 ### Development Setup
 
-1. **Clone and Install**
-   ```bash
-   git clone https://github.com/knishioka/meditation-chrome-extension.git
-   cd meditation-chrome-extension
-   npm install
-   ```
+```bash
+# Install dependencies
+npm install
 
-2. **Development Mode**
-   ```bash
-   npm run dev  # Starts webpack in watch mode
-   ```
+# Start development server with hot reload
+npm run dev
 
-3. **Run Tests**
-   ```bash
-   npm test           # Run all tests
-   npm test:watch     # Run tests in watch mode
-   npm test:coverage  # Generate coverage report
-   ```
+# Run tests
+npm test
 
-4. **Code Quality**
-   ```bash
-   npm run lint       # Check code style
-   npm run lint:fix   # Auto-fix issues
-   npm run format     # Format with Prettier
-   ```
+# Lint code
+npm run lint
+
+# Build for production
+npm run build
+```
 
 ### Project Structure
-
 ```
 meditation-chrome-extension/
-├── src/
-│   ├── background/       # Service worker
-│   ├── offscreen/       # Audio playback handler
-│   ├── popup/           # Extension popup UI
-│   ├── content/         # Content scripts
-│   ├── lib/             # Core libraries
-│   │   ├── audio-manager.js
-│   │   ├── meditation-content.js
-│   │   ├── storage-manager.js
-│   │   ├── tts-script-generator.js
-│   │   └── tts-service.js
-│   └── config/          # Configuration
 ├── public/              # Static assets
 │   ├── manifest.json    # Extension manifest
-│   └── _locales/        # Translations
-├── tests/               # Test files
-└── docs/                # Documentation
+│   ├── _locales/        # i18n translations
+│   └── audio/           # Audio files (generated)
+├── src/
+│   ├── background/      # Service worker
+│   ├── popup/           # Extension popup UI
+│   ├── offscreen/       # Audio playback handler
+│   ├── lib/             # Core libraries
+│   └── config/          # Configuration
+├── scripts/             # Build and generation scripts
+└── tests/               # Test files
 ```
 
-### API Configuration
+### Key Technologies
+- **Chrome Extension Manifest V3**: Latest extension platform
+- **Service Workers**: Background processing
+- **Offscreen Documents**: Audio playback (required for MV3)
+- **Web Audio API**: Advanced audio control
+- **ES6 Modules**: Modern JavaScript
+- **Webpack**: Module bundling
 
-The extension supports two external APIs for enhanced functionality:
+## 📖 User Guide
 
-#### Google Cloud Text-to-Speech
-- Provides natural voice synthesis
-- Supports multiple languages and voices
-- Free tier: 1 million characters/month
+### Starting a Meditation Session
 
-#### Freesound API
-- Access to meditation music and nature sounds
-- Community-driven audio library
-- Free with registration
+1. Click the extension icon in your Chrome toolbar
+2. Select your preferences:
+   - **Duration**: Choose session length (5-30 minutes)
+   - **Type**: Select meditation style
+   - **Background**: Pick ambient sound or silence
+   - **Language**: Switch between English and Japanese
+3. Click "Start Meditation" to begin
+4. Use controls to pause, resume, or stop the session
 
-See [docs/EXTERNAL_SETUP.md](docs/EXTERNAL_SETUP.md) for detailed setup instructions.
+### Meditation Types Explained
 
-## 🔧 Configuration
+- **🌬️ Breath Awareness**: Focus on breathing patterns
+- **🔍 Body Scan**: Progressive relaxation through body awareness
+- **💝 Loving Kindness**: Cultivate compassion and positive emotions
+- **🧠 Mindfulness**: Present-moment awareness practice
 
-### User Preferences
+### Customization Options
 
-All settings are saved locally and synced across devices:
+- **Voice Volume**: Adjust guidance voice level
+- **Music Volume**: Control background sound level
+- **Voice Gender**: Choose preferred voice (when available)
 
-- **Language**: English or Japanese interface and voice
-- **Default Duration**: Your preferred session length
-- **Audio Preferences**: Volume levels and sound choices
-- **Reminders**: Daily meditation reminder time
+## 🔧 API Documentation
 
-### Offline Mode
+### Core Modules
 
-The extension includes fallback audio for offline use:
-- Basic voice guidance in both languages
-- Ambient background sounds
-- Limited but functional meditation experience
+#### AudioManager
+Manages audio playback through the offscreen document.
+
+```javascript
+// Start a meditation session
+await audioManager.startSession({
+  type: 'breath_awareness',
+  duration: 600000, // 10 minutes
+  language: 'en',
+  backgroundSound: 'nature_sounds'
+});
+
+// Control playback
+await audioManager.pause();
+await audioManager.resume();
+await audioManager.stop();
+```
+
+#### StorageManager
+Handles user preferences and session history.
+
+```javascript
+// Get user preferences
+const prefs = await storageManager.getUserPreferences();
+
+// Update preferences
+await storageManager.updatePreference('language', 'ja');
+
+// Get session history
+const history = await storageManager.getSessionHistory(10);
+```
+
+#### MeditationContent
+Provides meditation scripts and timing.
+
+```javascript
+// Get meditation script
+const script = meditationContent.getScript(
+  'body_scan',    // type
+  'ja',           // language
+  900000          // 15 minutes
+);
+```
+
+## 🌍 Internationalization
+
+The extension supports multiple languages through Chrome's i18n API:
+
+```javascript
+// In JavaScript
+chrome.i18n.getMessage('welcome_message');
+
+// In HTML
+<span data-i18n="welcome_message"></span>
+```
+
+Add new languages by creating a folder in `public/_locales/` with a `messages.json` file.
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+```
+
+### Test Structure
+- Unit tests for utility functions
+- Integration tests for Chrome APIs
+- Mock implementations for audio playback
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see:
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-- [CLAUDE.md](CLAUDE.md) - Development guidelines and standards
-- [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md) - Current roadmap and tasks
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical architecture
-
-### How to Contribute
+### Development Workflow
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
+
+### Code Style
+- Follow ESLint configuration
+- Use Prettier for formatting
+- Write meaningful commit messages
+- Add tests for new features
 
 ## 📄 License
 
@@ -219,15 +281,25 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Google Cloud Text-to-Speech for natural voice synthesis
-- Freesound community for meditation audio
-- All contributors and testers
+- Meditation content inspired by traditional mindfulness practices
+- Audio processing techniques from Web Audio API documentation
+- Chrome Extension architecture based on Google's best practices
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/knishioka/meditation-chrome-extension/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/knishioka/meditation-chrome-extension/discussions)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/meditation-chrome-extension/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/meditation-chrome-extension/discussions)
+- **Email**: support@example.com
+
+## 🗺️ Roadmap
+
+- [ ] Additional meditation types (walking, sleep)
+- [ ] Progress tracking and statistics
+- [ ] Custom meditation builder
+- [ ] More language support
+- [ ] Sync settings across devices
+- [ ] Integration with health apps
 
 ---
 
-Made with 💙 for mindfulness and well-being
+Made with ❤️ for mindfulness and well-being
